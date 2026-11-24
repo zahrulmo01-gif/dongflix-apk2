@@ -54,6 +54,14 @@ android {
 		jvmTarget = '17'
 	}
 
+	buildFeatures {
+		compose true
+	}
+
+	composeOptions {
+		kotlinCompilerExtensionVersion '1.4.3'
+	}
+
 	configurations.all {
 		resolutionStrategy {
 			force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.10'
@@ -72,6 +80,18 @@ dependencies {
 	implementation 'androidx.core:core-ktx:1.10.1'
 	implementation 'androidx.recyclerview:recyclerview:1.3.0'
 	implementation 'androidx.cardview:cardview:1.0.0'
+
+	// Jetpack Compose (kompatibel dengan Kotlin 1.8.10)
+	implementation 'androidx.compose.ui:ui:1.4.3'
+	implementation 'androidx.compose.ui:ui-util:1.4.3'
+	implementation 'androidx.compose.foundation:foundation:1.4.3'
+	implementation 'androidx.compose.animation:animation:1.4.3'
+	implementation 'androidx.compose.material3:material3:1.1.1'
+	implementation 'androidx.activity:activity-compose:1.7.2'
+
+	// Backdrop & Shapes (Kyant0)
+	implementation 'io.github.kyant0:backdrop:1.0.6'
+	implementation 'io.github.kyant0:shapes:1.0.0'
 
 	implementation platform('com.google.firebase:firebase-bom:32.7.2')
 	implementation 'com.google.firebase:firebase-auth'
