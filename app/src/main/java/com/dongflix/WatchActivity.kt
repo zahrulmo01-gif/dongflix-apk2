@@ -96,6 +96,7 @@ import java.util.Collections
 import java.util.LinkedList
 import java.util.Locale
 import java.util.Queue
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -1547,8 +1548,9 @@ class WatchActivity : AppCompatActivity() {
 
 		dialogDecor?.viewTreeObserver?.addOnGlobalLayoutListener(keyboardLayoutListener)
 
-		sheet.setOnShowListener {
-			val bottomSheet = sheet.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+		sheet.setOnShowListener { dialog ->
+			val dialogObj = dialog as BottomSheetDialog
+			val bottomSheet = dialogObj.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 			if (bottomSheet != null) {
 				bottomSheet.setBackgroundColor(Color.TRANSPARENT)
 				bottomSheet.backgroundTintList = null
@@ -2243,6 +2245,7 @@ class WatchActivity : AppCompatActivity() {
 		btnFullscreen = findViewById(R.id.btnFullscreen)
 		imagePoster = findViewById(R.id.imagePoster)
 		iconExpandDetail = findViewById(R.id.iconExpandDetail)
+		iconCommentChevron = findViewById(R.id.iconCommentChevron)
 
 		textPlayerTitle = findViewById(R.id.textPlayerTitle)
 		textTime = findViewById(R.id.textTime)
@@ -2254,11 +2257,8 @@ class WatchActivity : AppCompatActivity() {
 		textGenre = findViewById(R.id.textGenre)
 		textActionServer = findViewById(R.id.textActionServer)
 		textSortEpisodes = findViewById(R.id.textSortEpisodes)
-
-		btnCommentSection = findViewById(R.id.btnCommentSection)
 		textCommentPreviewLabel = findViewById(R.id.textCommentPreviewLabel)
 		textCommentCount = findViewById(R.id.textCommentCount)
-		iconCommentChevron = findViewById(R.id.iconCommentChevron)
 
 		btnFill = findViewById(R.id.btnFill)
 		btnOpenDetail = findViewById(R.id.btnOpenDetail)
@@ -2267,6 +2267,7 @@ class WatchActivity : AppCompatActivity() {
 		btnActionDownload = findViewById(R.id.btnActionDownload)
 		btnActionShare = findViewById(R.id.btnActionShare)
 		btnActionReport = findViewById(R.id.btnActionReport)
+		btnCommentSection = findViewById(R.id.btnCommentSection)
 
 		playerLoading = findViewById(R.id.playerLoading)
 		playerSeekBar = findViewById(R.id.playerSeekBar)
@@ -5064,7 +5065,7 @@ class WatchActivity : AppCompatActivity() {
 					try {
 						val idx = word.toInt(radix)
 						if (idx in symtab.indices && symtab[idx].isNotEmpty()) {
-							wm.appendReplacement(sb, java.util.regex.Matcher.quoteReplacement(symtab[idx]))
+							wm.appendReplacement(sb, Matcher.quoteReplacement(symtab[idx]))
 						}
 					} catch (ignored: Exception) {
 					}
@@ -5549,7 +5550,7 @@ class WatchActivity : AppCompatActivity() {
 							if (mIframe.find()) {
 								val innerUrl = (mIframe.group(1) ?: "").replace("&amp;", "&")
 								currentStreamReferer = innerUrl
-								val innerHtml = fetchHttpString(innerUrl, finalTargetUrl, false)
+								var innerHtml = fetchHttpString(innerUrl, finalTargetUrl, false)
 								val innerUnpacked = unpackDeanEdwards(innerHtml)
 								val innerCombined = "$innerHtml\n$innerUnpacked"
 								val pInnerMedia = Pattern.compile("(https?:\\\\?/\\\\?/[^\"'\\s<>]+\\.(?:m3u8|mp4)[^\"'\\s<>]*)", Pattern.CASE_INSENSITIVE)
