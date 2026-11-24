@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "181024131291",
+    "firebase_url": "https://donghu-91808-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "donghu-91808",
+    "storage_bucket": "donghu-91808.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181024131291:android:880de89331d33aa35a24fe",
+        "android_client_info": {
+          "package_name": "com.dongflix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181024131291-92tb2t35t5bdlebktkk5f130q06r5pu9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAddo6FcJmixeNsGN3XACI_ghqGYzigMds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181024131291-92tb2t35t5bdlebktkk5f130q06r5pu9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
