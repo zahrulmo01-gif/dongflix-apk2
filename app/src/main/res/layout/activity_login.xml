@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#000000"
+	android:fillViewport="true">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:orientation="vertical"
+		android:padding="20dp">
+
+		<FrameLayout
+			android:id="@+id/logo_badge_box"
+			android:layout_width="56dp"
+			android:layout_height="56dp"
+			android:layout_marginBottom="14dp">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:text="DF"
+				android:textColor="#FFFFFF"
+				android:textSize="20sp"
+				android:textStyle="bold" />
+		</FrameLayout>
+
+		<TextView
+			android:id="@+id/text_auth_heading"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:text="Selamat Datang Kembali"
+			android:textColor="#FFFFFF"
+			android:textSize="22sp" />
+
+		<TextView
+			android:id="@+id/text_auth_sub"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="6dp"
+			android:layout_marginBottom="18dp"
+			android:gravity="center"
+			android:text="Masuk menggunakan email dan password akun Dongflix kamu."
+			android:textColor="#94A3B8"
+			android:textSize="13sp" />
+
+		<LinearLayout
+			android:id="@+id/tab_switch_container"
+			android:layout_width="match_parent"
+			android:layout_height="44dp"
+			android:layout_marginBottom="16dp"
+			android:orientation="horizontal"
+			android:padding="4dp">
+
+			<TextView
+				android:id="@+id/tab_mode_login"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:gravity="center"
+				android:text="Masuk"
+				android:textColor="#FFFFFF"
+				android:textSize="13.5sp" />
+
+			<TextView
+				android:id="@+id/tab_mode_register"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:gravity="center"
+				android:text="Daftar"
+				android:textColor="#94A3B8"
+				android:textSize="13.5sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/auth_form_card"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<LinearLayout
+				android:id="@+id/group_register_fields"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:visibility="gone">
+
+				<EditText
+					android:id="@+id/input_reg_name"
+					android:layout_width="match_parent"
+					android:layout_height="48dp"
+					android:layout_marginBottom="10dp"
+					android:hint="Nama tampilan"
+					android:inputType="textPersonName"
+					android:paddingHorizontal="14dp"
+					android:singleLine="true"
+					android:textColor="#FFFFFF"
+					android:textColorHint="#64748B"
+					android:textSize="14sp" />
+
+				<EditText
+					android:id="@+id/input_reg_username"
+					android:layout_width="match_parent"
+					android:layout_height="48dp"
+					android:layout_marginBottom="10dp"
+					android:hint="Username (tanpa @)"
+					android:inputType="text"
+					android:paddingHorizontal="14dp"
+					android:singleLine="true"
+					android:textColor="#FFFFFF"
+					android:textColorHint="#64748B"
+					android:textSize="14sp" />
+			</LinearLayout>
+
+			<EditText
+				android:id="@+id/input_auth_email"
+				android:layout_width="match_parent"
+				android:layout_height="48dp"
+				android:layout_marginBottom="10dp"
+				android:hint="Alamat email"
+				android:inputType="textEmailAddress"
+				android:paddingHorizontal="14dp"
+				android:singleLine="true"
+				android:textColor="#FFFFFF"
+				android:textColorHint="#64748B"
+				android:textSize="14sp" />
+
+			<EditText
+				android:id="@+id/input_auth_password"
+				android:layout_width="match_parent"
+				android:layout_height="48dp"
+				android:layout_marginBottom="16dp"
+				android:hint="Password"
+				android:inputType="textPassword"
+				android:paddingHorizontal="14dp"
+				android:singleLine="true"
+				android:textColor="#FFFFFF"
+				android:textColorHint="#64748B"
+				android:textSize="14sp" />
+
+			<FrameLayout
+				android:id="@+id/btn_submit_auth"
+				android:layout_width="match_parent"
+				android:layout_height="48dp"
+				android:clickable="true"
+				android:focusable="true">
+
+				<TextView
+					android:id="@+id/text_submit_auth"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:text="Masuk Sekarang"
+					android:textColor="#FFFFFF"
+					android:textSize="14.5sp" />
+
+				<ProgressBar
+					android:id="@+id/progress_auth"
+					android:layout_width="24dp"
+					android:layout_height="24dp"
+					android:layout_gravity="center"
+					android:visibility="gone" />
+			</FrameLayout>
+		</LinearLayout>
+
+		<TextView
+			android:id="@+id/text_toggle_hint"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:padding="6dp"
+			android:text="Belum punya akun? Daftar di sini"
+			android:textColor="#38BDF8"
+			android:textSize="13sp" />
+	</LinearLayout>
+</ScrollView>
