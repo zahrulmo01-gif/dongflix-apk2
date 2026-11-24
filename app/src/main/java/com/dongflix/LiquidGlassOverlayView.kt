@@ -6,11 +6,8 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.RadialGradient
 import android.graphics.RectF
-import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
 import android.graphics.Shader
 import android.os.Build
@@ -18,11 +15,6 @@ import android.util.AttributeSet
 import android.view.View
 import kotlin.math.min
 
-/**
- * Efek Liquid Glass ala Kyant0/AndroidLiquidGlass untuk Android View (XML).
- * Menggunakan AGSL RuntimeShader (refraksi lensa + chromatic dispersion + rim specular)
- * pada Android 13+ (API 33), serta fallback kaca specular 3D halus pada API < 33.
- */
 class LiquidGlassOverlayView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -56,6 +48,7 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
     private val shaderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var liquidShader: Any? = null
+    private var shaderFailed = false
 
     init {
         setWillNotDraw(false)
@@ -67,6 +60,7 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
                 liquidShader = RuntimeShader(AGSL_LIQUID_GLASS_SHADER)
             } catch (_: Throwable) {
                 liquidShader = null
+                shaderFailed = true
             }
         }
     }
@@ -74,7 +68,7 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         val w = width.toFloat()
         val h = height.toFloat()
-        if (w <= 0f || h <= 0f) return
+        if (w <= 2f || h <= 2f) return
 
         val d = resources.displayMetrics.density
         val radius = min(w, h) * 0.5f
@@ -84,72 +78,75 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
         clipPath.addRoundRect(rectF, radius, radius, Path.Direction.CW)
 
         val saveCount = canvas.save()
-        canvas.clipPath(clipPath)
+        try {
+            canvas.clipPath(clipPath)
 
-        // 1. AGSL Optical Refraction & Chromatic Rim Dispersion (Android 13+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && liquidShader is RuntimeShader) {
-            val shader = liquidShader as RuntimeShader
-            shader.setFloatUniform("uSize", w, h)
-            shader.setFloatUniform("uRadius", radius)
-            shader.setFloatUniform("uPress", pressProgress)
-            shader.setFloatUniform("uIsDroplet", if (isDropletMode) 1.0f else 0.0f)
-            shaderPaint.shader = shader
-            canvas.drawRect(rectF, shaderPaint)
-        } else {
-            // Fallback kaca cair 3D untuk Android 12 ke bawah
-            topSheenPaint.shader = LinearGradient(
-                0f, 0f, 0f, h,
+            var drewAgsl = false
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !shaderFailed && liquidShader is RuntimeShader) {
+                try {
+                    val shader = liquidShader as RuntimeShader
+                    shader.setFloatUniform("uSize", w, h)
+                    shader.setFloatUniform("uRadius", radius)
+                    shader.setFloatUniform("uPress", pressProgress)
+                    shader.setFloatUniform("uIsDroplet", if (isDropletMode) 1.0f else 0.0f)
+                    shaderPaint.shader = shader
+                    canvas.drawRect(rectF, shaderPaint)
+                    drewAgsl = true
+                } catch (_: Throwable) {
+                    shaderFailed = true
+                    shaderPaint.shader = null
+                }
+            }
+
+            if (!drewAgsl) {
+                topSheenPaint.shader = LinearGradient(
+                    0f, 0f, 0f, h,
+                    intArrayOf(
+                        Color.argb(if (isDropletMode) 95 else 58, 255, 255, 255),
+                        Color.argb(16, 255, 255, 255),
+                        Color.TRANSPARENT,
+                        Color.argb(if (isDropletMode) 48 else 28, 140, 210, 255)
+                    ),
+                    floatArrayOf(0f, 0.34f, 0.68f, 1f),
+                    Shader.TileMode.CLAMP
+                )
+                canvas.drawRect(rectF, topSheenPaint)
+            }
+
+            if (isDropletMode || pressProgress > 0.01f) {
+                val glowAlpha = if (isDropletMode) (42 + (38 * pressProgress)).toInt() else (28 * pressProgress).toInt()
+                innerGlowPaint.shader = RadialGradient(
+                    w * 0.5f, h * 0.22f, maxOf(w, h) * 0.72f,
+                    intArrayOf(Color.argb(glowAlpha, 255, 255, 255), Color.TRANSPARENT),
+                    floatArrayOf(0f, 1f),
+                    Shader.TileMode.CLAMP
+                )
+                canvas.drawRect(rectF, innerGlowPaint)
+            }
+
+            val strokeW = (if (isDropletMode) 1.35f else 1.15f) * d
+            borderPaint.strokeWidth = strokeW
+            borderPaint.shader = LinearGradient(
+                0f, 0f, w * 0.25f, h,
                 intArrayOf(
-                    Color.argb(if (isDropletMode) 95 else 58, 255, 255, 255),
-                    Color.argb(14, 255, 255, 255),
-                    Color.TRANSPARENT,
-                    Color.argb(if (isDropletMode) 45 else 26, 140, 210, 255)
+                    Color.argb(if (isDropletMode) 195 else 150, 255, 255, 255),
+                    Color.argb(38, 255, 255, 255),
+                    Color.argb(22, 148, 163, 184),
+                    Color.argb(if (isDropletMode) 135 else 95, 210, 235, 255)
                 ),
-                floatArrayOf(0f, 0.34f, 0.68f, 1f),
+                floatArrayOf(0f, 0.38f, 0.72f, 1f),
                 Shader.TileMode.CLAMP
             )
-            canvas.drawRect(rectF, topSheenPaint)
+            val inset = strokeW * 0.5f
+            val rInset = maxOf(0f, radius - inset)
+            rectF.set(inset, inset, w - inset, h - inset)
+            canvas.drawRoundRect(rectF, rInset, rInset, borderPaint)
+        } finally {
+            canvas.restoreToCount(saveCount)
         }
-
-        // 2. Pantulan cahaya dalam (caustic inner glow) saat ditekan / digeser
-        if (isDropletMode || pressProgress > 0.01f) {
-            val glowAlpha = if (isDropletMode) (42 + (38 * pressProgress)).toInt() else (28 * pressProgress).toInt()
-            innerGlowPaint.shader = RadialGradient(
-                w * 0.5f, h * 0.22f, maxOf(w, h) * 0.72f,
-                intArrayOf(Color.argb(glowAlpha, 255, 255, 255), Color.TRANSPARENT),
-                floatArrayOf(0f, 1f),
-                Shader.TileMode.CLAMP
-            )
-            canvas.drawRect(rectF, innerGlowPaint)
-        }
-
-        // 3. Rim Light Specular Kaca Melengkung (ciri khas Liquid Glass iOS 26 / Kyant0)
-        val strokeW = (if (isDropletMode) 1.35f else 1.15f) * d
-        borderPaint.strokeWidth = strokeW
-        borderPaint.shader = LinearGradient(
-            0f, 0f, w * 0.25f, h,
-            intArrayOf(
-                Color.argb(if (isDropletMode) 195 else 150, 255, 255, 255),
-                Color.argb(38, 255, 255, 255),
-                Color.argb(22, 148, 163, 184),
-                Color.argb(if (isDropletMode) 135 else 95, 210, 235, 255)
-            ),
-            floatArrayOf(0f, 0.38f, 0.72f, 1f),
-            Shader.TileMode.CLAMP
-        )
-        val inset = strokeW * 0.5f
-        rectF.set(inset, inset, w - inset, h - inset)
-        canvas.drawRoundRect(rectF, radius - inset, radius - inset, borderPaint)
-
-        canvas.restoreToCount(saveCount)
     }
 
     companion object {
-        /**
-         * Shader SDF Rounded-Box yang menghitung jarak ke tepi kapsul,
-         * menghasilkan efek lensa cembung, dispersi warna tipis (RGB fringe) di bezel,
-         * dan pantulan specular atas-bawah ala Kyant0/AndroidLiquidGlass.
-         */
         private const val AGSL_LIQUID_GLASS_SHADER = """
             uniform float2 uSize;
             uniform float uRadius;
@@ -157,8 +154,8 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
             uniform float uIsDroplet;
 
             float sdRoundBox(float2 p, float2 b, float r) {
-                float2 q = abs(p) - b + r;
-                return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
+                float2 q = abs(p) - b + float2(r, r);
+                return min(max(q.x, q.y), 0.0) + length(max(q, float2(0.0, 0.0))) - r;
             }
 
             half4 main(float2 fragCoord) {
@@ -168,36 +165,29 @@ class LiquidGlassOverlayView @JvmOverloads constructor(
 
                 float dist = sdRoundBox(p, halfSize, r);
                 if (dist > 0.0) {
-                    return half4(0.0);
+                    return half4(0.0, 0.0, 0.0, 0.0);
                 }
 
-                // Kedalaman dari tepi kapsul (0 di pinggir, 1 di tengah)
-                float bezelWidth = clamp(r * 0.42, 10.0, 26.0);
-                float edgeFactor = 1.0 - clamp(-dist / bezelWidth, 0.0, 1.0);
+                float bezelWidth = clamp(r * 0.42, 8.0, 26.0);
+                float edgeFactor = 1.0 - clamp(-dist / max(bezelWidth, 1.0), 0.0, 1.0);
                 float lensCurve = edgeFactor * edgeFactor;
 
-                // Normal 2D permukaan lensa cembung
-                float2 norm = normalize(p + float2(0.0001, 0.0001));
-
-                // Specular highlight dari arah cahaya atas-kiri
+                float2 norm = normalize(p + float2(0.001, 0.001));
                 float topLight = clamp(-norm.y * 0.75 - norm.x * 0.25, 0.0, 1.0);
                 float bottomBounce = clamp(norm.y * 0.65, 0.0, 1.0);
 
-                // Dispersi kromatik halus di lengkungan tepi kaca
                 float disp = lensCurve * (0.14 + uPress * 0.08 + uIsDroplet * 0.06);
                 float rChan = disp * clamp(topLight + 0.35, 0.0, 1.2);
                 float gChan = disp * clamp(topLight + 0.30, 0.0, 1.2);
                 float bChan = disp * clamp(topLight + bottomBounce * 0.8 + 0.42, 0.0, 1.3);
 
-                // Kilau permukaan atas kapsul (liquid surface sheen)
                 float ny = fragCoord.y / max(uSize.y, 1.0);
                 float surfaceSheen = pow(clamp(1.0 - ny * 1.45, 0.0, 1.0), 2.2)
                                    * (0.16 + uIsDroplet * 0.14 + uPress * 0.08);
 
-                // Tinting kaca bening
-                float baseTint = (0.04 + uIsDroplet * 0.08 + uPress * 0.04);
-
+                float baseTint = 0.04 + uIsDroplet * 0.08 + uPress * 0.04;
                 float alpha = clamp(baseTint + surfaceSheen + lensCurve * (0.24 + uIsDroplet * 0.10), 0.0, 0.62);
+
                 float3 col = float3(
                     clamp(0.88 + rChan + surfaceSheen, 0.0, 1.0),
                     clamp(0.92 + gChan + surfaceSheen, 0.0, 1.0),
