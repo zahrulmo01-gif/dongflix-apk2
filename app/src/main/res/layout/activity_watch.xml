@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rootWatchLayout"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#000000"
+	android:orientation="vertical">
+
+	<!-- Area Video Player -->
+	<FrameLayout
+		android:id="@+id/layoutPlayer"
+		android:layout_width="match_parent"
+		android:layout_height="220dp"
+		android:background="#000000">
+
+		<TextureView
+			android:id="@+id/playerTextureView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_gravity="center" />
+
+		<View
+			android:id="@+id/playerControlsOverlay"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+		<View
+			android:id="@+id/gradientTop"
+			android:layout_width="match_parent"
+			android:layout_height="72dp"
+			android:layout_gravity="top" />
+
+		<View
+			android:id="@+id/gradientBottom"
+			android:layout_width="match_parent"
+			android:layout_height="84dp"
+			android:layout_gravity="bottom" />
+
+		<!-- Top Player Bar -->
+		<LinearLayout
+			android:id="@+id/topBar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingHorizontal="16dp"
+			android:paddingTop="14dp"
+			android:paddingBottom="6dp">
+
+			<ImageView
+				android:id="@+id/btnBack"
+				android:layout_width="28dp"
+				android:layout_height="28dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_back_arrow"
+				android:tint="#FFFFFF" />
+
+			<TextView
+				android:id="@+id/textPlayerTitle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="12dp"
+				android:layout_weight="1"
+				android:ellipsize="end"
+				android:maxLines="1"
+				android:textColor="#FFFFFF"
+				android:textSize="16sp"
+				android:visibility="gone" />
+
+			<ImageView
+				android:id="@+id/btnCast"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_marginEnd="14dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_cast"
+				android:tint="#FFFFFF" />
+
+			<ImageView
+				android:id="@+id/btnLock"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_marginEnd="14dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_lock"
+				android:tint="#FFFFFF"
+				android:visibility="gone" />
+
+			<ImageView
+				android:id="@+id/btnSettings"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_settings"
+				android:tint="#FFFFFF" />
+		</LinearLayout>
+
+		<!-- Kontrol Tengah (Prev, Rewind, Play/Loading, Forward, Next) -->
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center">
+
+			<ImageView
+				android:id="@+id/btnPrevEpisode"
+				android:layout_width="32dp"
+				android:layout_height="32dp"
+				android:layout_alignParentStart="true"
+				android:layout_centerVertical="true"
+				android:layout_marginStart="12dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_prev"
+				android:tint="#FFFFFF" />
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:gravity="center"
+				android:orientation="horizontal">
+
+				<ImageView
+					android:id="@+id/btnRewind"
+					android:layout_width="36dp"
+					android:layout_height="36dp"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_rewind"
+					android:tint="#FFFFFF" />
+
+				<FrameLayout
+					android:id="@+id/frame_layout5"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:layout_marginHorizontal="22dp">
+
+					<ImageView
+						android:id="@+id/btnPlay"
+						android:layout_width="54dp"
+						android:layout_height="54dp"
+						android:layout_gravity="center"
+						android:padding="14dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_play1"
+						android:tint="#000000" />
+
+					<ProgressBar
+						android:id="@+id/playerLoading"
+						android:layout_width="64dp"
+						android:layout_height="64dp"
+						android:layout_gravity="center"
+						android:visibility="gone" />
+				</FrameLayout>
+
+				<ImageView
+					android:id="@+id/btnForward"
+					android:layout_width="36dp"
+					android:layout_height="36dp"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_forward"
+					android:tint="#FFFFFF" />
+			</LinearLayout>
+
+			<ImageView
+				android:id="@+id/btnNextEpisode"
+				android:layout_width="32dp"
+				android:layout_height="32dp"
+				android:layout_alignParentEnd="true"
+				android:layout_centerVertical="true"
+				android:layout_marginEnd="12dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_next"
+				android:tint="#FFFFFF" />
+		</RelativeLayout>
+
+		<!-- Animasi Seek & Pill Speed 2x -->
+		<LinearLayout
+			android:id="@+id/animSeekLeft"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical|start"
+			android:layout_marginStart="28dp"
+			android:orientation="horizontal"
+			android:paddingHorizontal="12dp"
+			android:paddingVertical="6dp"
+			android:visibility="gone">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="-10s"
+				android:textColor="#FFFFFF"
+				android:textSize="12sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/animSeekRight"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical|end"
+			android:layout_marginEnd="28dp"
+			android:orientation="horizontal"
+			android:paddingHorizontal="12dp"
+			android:paddingVertical="6dp"
+			android:visibility="gone">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="+10s"
+				android:textColor="#FFFFFF"
+				android:textSize="12sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/pillSpeedHold"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|center_horizontal"
+			android:layout_marginTop="52dp"
+			android:orientation="horizontal"
+			android:paddingHorizontal="14dp"
+			android:paddingVertical="6dp"
+			android:visibility="gone">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="2.0x Kecepatan"
+				android:textColor="#FFFFFF"
+				android:textSize="12sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:id="@+id/btnUnlockScreen"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:clickable="true"
+			android:focusable="true"
+			android:orientation="horizontal"
+			android:paddingHorizontal="16dp"
+			android:paddingVertical="8dp"
+			android:visibility="gone">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Buka Kunci Layar"
+				android:textColor="#FFFFFF"
+				android:textSize="13sp" />
+		</LinearLayout>
+
+		<!-- Bottom Player Controls -->
+		<LinearLayout
+			android:id="@+id/bottomControls"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom"
+			android:orientation="vertical"
+			android:paddingBottom="6dp">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:paddingHorizontal="14dp">
+
+				<TextView
+					android:id="@+id/textTime"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="00:00 / 00:00"
+					android:textColor="#FFFFFF"
+					android:textSize="13sp" />
+
+				<TextView
+					android:id="@+id/btnFullscreenEpisodes"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="14dp"
+					android:text="Episode"
+					android:textColor="#FFFFFF"
+					android:textSize="13sp"
+					android:visibility="gone" />
+
+				<TextView
+					android:id="@+id/btnQuality"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="14dp"
+					android:text="Auto"
+					android:textColor="#FFFFFF"
+					android:textSize="13sp" />
+
+				<ImageView
+					android:id="@+id/btnFullscreen"
+					android:layout_width="24dp"
+					android:layout_height="24dp"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_fullscreen"
+					android:tint="#FFFFFF" />
+			</LinearLayout>
+
+			<SeekBar
+				android:id="@+id/playerSeekBar"
+				android:layout_width="match_parent"
+				android:layout_height="24dp"
+				android:layout_marginTop="2dp" />
+		</LinearLayout>
+	</FrameLayout>
+
+	<!-- Divider & Mini Progress Bar -->
+	<FrameLayout
+		android:id="@+id/dividerContainer"
+		android:layout_width="match_parent"
+		android:layout_height="3dp"
+		android:background="#1E222B">
+
+		<ProgressBar
+			android:id="@+id/miniVideoProgressBar"
+			style="?android:attr/progressBarStyleHorizontal"
+			android:layout_width="match_parent"
+			android:layout_height="3dp"
+			android:max="1000"
+			android:visibility="invisible" />
+	</FrameLayout>
+
+	<!-- Konten Detail, Episode, Komentar & Rekomendasi -->
+	<ScrollView
+		android:id="@+id/vscroll16"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:fillViewport="true"
+		android:scrollbars="none">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:padding="16dp">
+
+			<!-- Header Detail Donghua -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="top"
+				android:orientation="horizontal">
+
+				<ImageView
+					android:id="@+id/imagePoster"
+					android:layout_width="76dp"
+					android:layout_height="106dp"
+					android:layout_marginEnd="14dp"
+					android:scaleType="centerCrop"
+					android:src="@drawable/default_image" />
+
+				<LinearLayout
+					android:id="@+id/btnOpenDetail"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:clickable="true"
+					android:focusable="true"
+					android:orientation="vertical">
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+
+						<TextView
+							android:id="@+id/textJudul"
+							android:layout_width="0dp"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:ellipsize="end"
+							android:maxLines="2"
+							android:textColor="#FFFFFF"
+							android:textSize="17sp" />
+
+						<ImageView
+							android:id="@+id/iconExpandDetail"
+							android:layout_width="28dp"
+							android:layout_height="28dp"
+							android:layout_marginStart="8dp"
+							android:padding="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_chevron_down"
+							android:tint="#CBD5E1" />
+					</LinearLayout>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="8dp"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+
+						<TextView
+							android:id="@+id/textRating"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginEnd="10dp"
+							android:textColor="#38BDF8"
+							android:textSize="12sp" />
+
+						<TextView
+							android:id="@+id/textYear"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_marginEnd="10dp"
+							android:textColor="#94A3B8"
+							android:textSize="12sp" />
+
+						<TextView
+							android:id="@+id/textGenre"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:ellipsize="end"
+							android:maxLines="1"
+							android:textColor="#94A3B8"
+							android:textSize="12sp" />
+					</LinearLayout>
+				</LinearLayout>
+			</LinearLayout>
+
+			<!-- Bar Tombol Aksi (Fill, Server, Unduh, Bagikan, Lapor) -->
+			<HorizontalScrollView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:scrollbars="none">
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+
+					<LinearLayout
+						android:id="@+id/btnFill"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:clickable="true"
+						android:focusable="true"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="14dp">
+
+						<ImageView
+							android:layout_width="15dp"
+							android:layout_height="15dp"
+							android:layout_marginEnd="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_fill"
+							android:tint="#CBD5E1" />
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Aspect"
+							android:textColor="#CBD5E1"
+							android:textSize="12.5sp" />
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/btnActionServer"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:clickable="true"
+						android:focusable="true"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="14dp">
+
+						<ImageView
+							android:layout_width="15dp"
+							android:layout_height="15dp"
+							android:layout_marginEnd="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_server"
+							android:tint="#CBD5E1" />
+
+						<TextView
+							android:id="@+id/textActionServer"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Server"
+							android:textColor="#CBD5E1"
+							android:textSize="12.5sp" />
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/btnActionDownload"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:clickable="true"
+						android:focusable="true"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="14dp">
+
+						<ImageView
+							android:layout_width="15dp"
+							android:layout_height="15dp"
+							android:layout_marginEnd="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_download"
+							android:tint="#CBD5E1" />
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Unduh"
+							android:textColor="#CBD5E1"
+							android:textSize="12.5sp" />
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/btnActionShare"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:clickable="true"
+						android:focusable="true"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="14dp">
+
+						<ImageView
+							android:layout_width="15dp"
+							android:layout_height="15dp"
+							android:layout_marginEnd="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_share"
+							android:tint="#CBD5E1" />
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Bagikan"
+							android:textColor="#CBD5E1"
+							android:textSize="12.5sp" />
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/btnActionReport"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:clickable="true"
+						android:focusable="true"
+						android:gravity="center_vertical"
+						android:orientation="horizontal"
+						android:paddingHorizontal="14dp">
+
+						<ImageView
+							android:layout_width="15dp"
+							android:layout_height="15dp"
+							android:layout_marginEnd="6dp"
+							android:scaleType="fitCenter"
+							android:src="@drawable/ic_report"
+							android:tint="#CBD5E1" />
+
+						<TextView
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:text="Lapor"
+							android:textColor="#CBD5E1"
+							android:textSize="12.5sp" />
+					</LinearLayout>
+				</LinearLayout>
+			</HorizontalScrollView>
+
+			<!-- Header Daftar Episode -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:layout_marginBottom="10dp"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Daftar Episode"
+					android:textColor="#FFFFFF"
+					android:textSize="15.5sp" />
+
+				<LinearLayout
+					android:id="@+id/btnSortEpisodes"
+					android:layout_width="wrap_content"
+					android:layout_height="30dp"
+					android:layout_marginEnd="10dp"
+					android:clickable="true"
+					android:focusable="true"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="10dp">
+
+					<ImageView
+						android:layout_width="13dp"
+						android:layout_height="13dp"
+						android:layout_marginEnd="5dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_sort"
+						android:tint="#CBD5E1" />
+
+					<TextView
+						android:id="@+id/textSortEpisodes"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Terbaru"
+						android:textColor="#CBD5E1"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<TextView
+					android:id="@+id/textview85"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Semua"
+					android:textColor="#94A3B8"
+					android:textSize="12.5sp" />
+			</LinearLayout>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerEpisode"
+				android:layout_width="match_parent"
+				android:layout_height="64dp" />
+
+			<!-- Pill Komentar -->
+			<LinearLayout
+				android:id="@+id/btnCommentSection"
+				android:layout_width="match_parent"
+				android:layout_height="44dp"
+				android:layout_marginTop="16dp"
+				android:clickable="true"
+				android:focusable="true"
+				android:gravity="center_vertical"
+				android:orientation="horizontal"
+				android:paddingHorizontal="14dp">
+
+				<TextView
+					android:id="@+id/textCommentPreviewLabel"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Komentar"
+					android:textColor="#E2E8F0"
+					android:textSize="13.5sp" />
+
+				<TextView
+					android:id="@+id/textCommentCount"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="6dp"
+					android:text="0"
+					android:textColor="#94A3B8"
+					android:textSize="13sp" />
+
+				<ImageView
+					android:id="@+id/iconCommentChevron"
+					android:layout_width="16dp"
+					android:layout_height="16dp"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_chevron_right" />
+			</LinearLayout>
+
+			<!-- Rekomendasi Serupa -->
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				android:layout_marginBottom="10dp"
+				android:text="Rekomendasi Serupa"
+				android:textColor="#FFFFFF"
+				android:textSize="15.5sp" />
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerRekomendasi"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>
