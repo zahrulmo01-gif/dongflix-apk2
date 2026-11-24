@@ -597,7 +597,7 @@
 			android:paddingBottom="120dp" />
 	</LinearLayout>
 
-	<!-- Halaman Pustaka (diisi dinamis di MainActivity) -->
+	<!-- Halaman Pustaka -->
 	<FrameLayout
 		android:id="@+id/layout_favorite"
 		android:layout_width="match_parent"
@@ -605,7 +605,7 @@
 		android:background="#000000"
 		android:visibility="gone" />
 
-	<!-- Halaman Akun (diisi dinamis di MainActivity) -->
+	<!-- Halaman Akun -->
 	<FrameLayout
 		android:id="@+id/layout_profile"
 		android:layout_width="match_parent"
@@ -715,7 +715,7 @@
 			android:visibility="gone" />
 	</FrameLayout>
 
-	<!-- Bottom Navigation Wrapper -->
+	<!-- Bottom Navigation Wrapper (View Fallback + Compose LiquidBottomTabs) -->
 	<LinearLayout
 		android:id="@+id/navbar_wrapper"
 		android:layout_width="match_parent"
@@ -870,4 +870,13 @@
 				android:src="@drawable/ic_search" />
 		</FrameLayout>
 	</LinearLayout>
+
+	<!-- Jetpack Compose LiquidBottomTabs Container -->
+	<androidx.compose.ui.platform.ComposeView
+		android:id="@+id/compose_liquid_navbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:paddingHorizontal="14dp"
+		android:paddingBottom="18dp" />
 </FrameLayout>
