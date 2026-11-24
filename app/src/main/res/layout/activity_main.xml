@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/root_main_container"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#000000">
+
+	<!-- Halaman Beranda -->
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/main_scroll_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:fillViewport="true"
+		android:paddingBottom="120dp"
+		android:scrollbars="none">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<!-- Hero Banner -->
+			<FrameLayout
+				android:layout_width="match_parent"
+				android:layout_height="430dp">
+
+				<ImageView
+					android:id="@+id/img_hero_banner"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:scaleType="centerCrop"
+					android:src="@drawable/default_image" />
+
+				<View
+					android:id="@+id/header_shadow"
+					android:layout_width="match_parent"
+					android:layout_height="120dp"
+					android:layout_gravity="top" />
+
+				<View
+					android:id="@+id/hero_shadow"
+					android:layout_width="match_parent"
+					android:layout_height="240dp"
+					android:layout_gravity="bottom" />
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_gravity="bottom"
+					android:orientation="vertical"
+					android:paddingHorizontal="16dp"
+					android:paddingBottom="18dp">
+
+					<TextView
+						android:id="@+id/text_hero_title"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:ellipsize="end"
+						android:maxLines="2"
+						android:textColor="#FFFFFF"
+						android:textSize="22sp" />
+
+					<TextView
+						android:id="@+id/text_hero_desc"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="6dp"
+						android:ellipsize="end"
+						android:maxLines="3"
+						android:textColor="#CBD5E1"
+						android:textSize="12.5sp" />
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="14dp"
+						android:gravity="center_vertical"
+						android:orientation="horizontal">
+
+						<LinearLayout
+							android:id="@+id/btn_hero_play"
+							android:layout_width="0dp"
+							android:layout_height="44dp"
+							android:layout_weight="1"
+							android:clickable="true"
+							android:focusable="true"
+							android:gravity="center"
+							android:orientation="horizontal"
+							android:visibility="gone">
+
+							<ImageView
+								android:id="@+id/img_play_icon"
+								android:layout_width="18dp"
+								android:layout_height="18dp"
+								android:layout_marginEnd="8dp"
+								android:scaleType="fitCenter"
+								android:src="@drawable/ic_play1"
+								android:tint="#000000"
+								android:visibility="gone" />
+
+							<TextView
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:text="Tonton Sekarang"
+								android:textColor="#000000"
+								android:textSize="13.5sp" />
+						</LinearLayout>
+
+						<FrameLayout
+							android:id="@+id/btn_hero_favorite"
+							android:layout_width="44dp"
+							android:layout_height="44dp"
+							android:layout_marginStart="10dp"
+							android:clickable="true"
+							android:focusable="true"
+							android:visibility="gone">
+
+							<ImageView
+								android:id="@+id/img_hero_favorite"
+								android:layout_width="20dp"
+								android:layout_height="20dp"
+								android:layout_gravity="center"
+								android:scaleType="fitCenter"
+								android:src="@drawable/ic_bookmark" />
+						</FrameLayout>
+					</LinearLayout>
+
+					<LinearLayout
+						android:id="@+id/indicator_capsule"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center_horizontal"
+						android:layout_marginTop="14dp"
+						android:gravity="center"
+						android:orientation="horizontal"
+						android:visibility="invisible">
+
+						<View
+							android:id="@+id/dot_0"
+							android:layout_width="16dp"
+							android:layout_height="5dp" />
+
+						<View
+							android:id="@+id/dot_1"
+							android:layout_width="5dp"
+							android:layout_height="5dp" />
+
+						<View
+							android:id="@+id/dot_2"
+							android:layout_width="5dp"
+							android:layout_height="5dp" />
+					</LinearLayout>
+				</LinearLayout>
+			</FrameLayout>
+
+			<!-- Lanjutkan Menonton -->
+			<LinearLayout
+				android:id="@+id/layout_section_continue"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="14dp"
+				android:orientation="vertical"
+				android:visibility="gone">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:id="@+id/text_title_continue"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Lanjutkan Menonton"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_continue_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat riwayat"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerContinue"
+					android:layout_width="match_parent"
+					android:layout_height="132dp"
+					android:clipToPadding="false"
+					android:paddingHorizontal="16dp" />
+			</LinearLayout>
+
+			<!-- Populer Hari Ini -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:paddingHorizontal="16dp"
+					android:text="Populer Hari Ini"
+					android:textColor="#FFFFFF"
+					android:textSize="16sp" />
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerPopular"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Baru Diupdate (Grid 3 Kolom) -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="18dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Baru Diupdate"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<GridView
+					android:id="@+id/gridview1"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:horizontalSpacing="12dp"
+					android:numColumns="3"
+					android:paddingHorizontal="16dp"
+					android:stretchMode="columnWidth"
+					android:verticalSpacing="16dp" />
+			</LinearLayout>
+
+			<!-- Populer di Dongflix -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Populer di Dongflix"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_popular_dongflix_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerPopularDongflix"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Donghua Romantis Tipis-Tipis -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Donghua Romantis Tipis-Tipis"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_romance_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerRomanceDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Kultivasi & Keabadian -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Kultivasi &amp; Keabadian"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_cultivation_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerCultivationDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Donghua Tamat -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Donghua Tamat"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_completed_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerCompletedDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Donghua Komedi Ringan -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Donghua Komedi Ringan"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_comedy_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerComedyDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Misteri & Teka-Teki -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Misteri &amp; Teka-Teki"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_mystery_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerMysteryDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<!-- Donghua Movie -->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="16dp"
+				android:orientation="vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginBottom="10dp"
+					android:gravity="center_vertical"
+					android:orientation="horizontal"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:text="Donghua Movie"
+						android:textColor="#FFFFFF"
+						android:textSize="16sp" />
+
+					<TextView
+						android:id="@+id/text_movie_see_all"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Lihat semua"
+						android:textColor="#94A3B8"
+						android:textSize="12sp" />
+				</LinearLayout>
+
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerMovieDonghua"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+
+	<!-- Halaman Pencarian -->
+	<LinearLayout
+		android:id="@+id/layout_search"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#000000"
+		android:orientation="vertical"
+		android:paddingHorizontal="14dp"
+		android:visibility="gone">
+
+		<LinearLayout
+			android:id="@+id/search_bar_container"
+			android:layout_width="match_parent"
+			android:layout_height="48dp"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			android:paddingHorizontal="14dp">
+
+			<ImageView
+				android:layout_width="18dp"
+				android:layout_height="18dp"
+				android:layout_marginEnd="10dp"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_search"
+				android:tint="#94A3B8" />
+
+			<EditText
+				android:id="@+id/input_search"
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:background="@null"
+				android:hint="Cari judul atau genre donghua..."
+				android:singleLine="true"
+				android:textColor="#FFFFFF"
+				android:textColorHint="#64748B"
+				android:textSize="14sp" />
+
+			<TextView
+				android:id="@+id/btn_clear_search"
+				android:layout_width="26dp"
+				android:layout_height="26dp"
+				android:gravity="center"
+				android:text="✕"
+				android:textColor="#CBD5E1"
+				android:textSize="12sp"
+				android:visibility="gone" />
+		</LinearLayout>
+
+		<TextView
+			android:id="@+id/text_search_section_label"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="14dp"
+			android:layout_marginBottom="8dp"
+			android:text="Populer di Dongflix"
+			android:textColor="#94A3B8"
+			android:textSize="13sp" />
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recycler_search_list"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:clipToPadding="false"
+			android:paddingBottom="120dp" />
+	</LinearLayout>
+
+	<!-- Halaman Pustaka (diisi dinamis di MainActivity) -->
+	<FrameLayout
+		android:id="@+id/layout_favorite"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#000000"
+		android:visibility="gone" />
+
+	<!-- Halaman Akun (diisi dinamis di MainActivity) -->
+	<FrameLayout
+		android:id="@+id/layout_profile"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#000000"
+		android:visibility="gone" />
+
+	<!-- Top Header Bar -->
+	<RelativeLayout
+		android:id="@+id/relativelayout69"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top">
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentStart="true"
+			android:layout_centerVertical="true"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<ImageView
+				android:id="@+id/img_user_avatar"
+				android:layout_width="38dp"
+				android:layout_height="38dp"
+				android:layout_marginEnd="10dp"
+				android:scaleType="centerCrop"
+				android:src="@drawable/ic_profile" />
+
+			<TextView
+				android:id="@+id/text_username"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:maxLines="1"
+				android:text="Dongflix"
+				android:textColor="#FFFFFF"
+				android:textSize="15sp" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentEnd="true"
+			android:layout_centerVertical="true"
+			android:gravity="center_vertical"
+			android:orientation="horizontal">
+
+			<FrameLayout
+				android:id="@+id/btn_top_search"
+				android:layout_width="40dp"
+				android:layout_height="40dp"
+				android:layout_marginEnd="8dp"
+				android:clickable="true"
+				android:focusable="true">
+
+				<ImageView
+					android:id="@+id/img_top_search"
+					android:layout_width="19dp"
+					android:layout_height="19dp"
+					android:layout_gravity="center"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_search" />
+			</FrameLayout>
+
+			<FrameLayout
+				android:id="@+id/btn_top_chat"
+				android:layout_width="40dp"
+				android:layout_height="40dp"
+				android:clickable="true"
+				android:focusable="true">
+
+				<ImageView
+					android:id="@+id/img_top_chat"
+					android:layout_width="19dp"
+					android:layout_height="19dp"
+					android:layout_gravity="center"
+					android:scaleType="fitCenter"
+					android:src="@drawable/ic_chat" />
+			</FrameLayout>
+		</LinearLayout>
+	</RelativeLayout>
+
+	<!-- Indikator Pull-to-Refresh -->
+	<FrameLayout
+		android:id="@+id/pull_refresh_indicator"
+		android:layout_width="42dp"
+		android:layout_height="42dp"
+		android:layout_gravity="top|center_horizontal"
+		android:layout_marginTop="92dp"
+		android:visibility="gone">
+
+		<ImageView
+			android:id="@+id/img_pull_refresh_icon"
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+			android:layout_gravity="center"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_chevron_down" />
+
+		<ProgressBar
+			android:id="@+id/pull_refresh_spinner"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:layout_gravity="center"
+			android:visibility="gone" />
+	</FrameLayout>
+
+	<!-- Bottom Navigation Wrapper -->
+	<LinearLayout
+		android:id="@+id/navbar_wrapper"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:gravity="center_vertical"
+		android:orientation="horizontal"
+		android:paddingHorizontal="14dp"
+		android:paddingBottom="18dp">
+
+		<FrameLayout
+			android:id="@+id/btn_compact_home"
+			android:layout_width="56dp"
+			android:layout_height="60dp"
+			android:layout_marginEnd="8dp"
+			android:visibility="gone">
+
+			<eightbitlab.com.blurview.BlurView
+				android:id="@+id/compact_home_blur_bg"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<ImageView
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_home"
+				android:tint="#FFFFFF" />
+		</FrameLayout>
+
+		<FrameLayout
+			android:id="@+id/mini_player_inline_slot"
+			android:layout_width="0dp"
+			android:layout_height="60dp"
+			android:layout_weight="1"
+			android:visibility="gone" />
+
+		<FrameLayout
+			android:id="@+id/navbar"
+			android:layout_width="0dp"
+			android:layout_height="64dp"
+			android:layout_weight="1">
+
+			<eightbitlab.com.blurview.BlurView
+				android:id="@+id/navbar_blur_bg"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="horizontal"
+				android:padding="5dp">
+
+				<LinearLayout
+					android:id="@+id/tab_beranda"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical">
+
+					<ImageView
+						android:id="@+id/img_home"
+						android:layout_width="20dp"
+						android:layout_height="20dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_home" />
+
+					<TextView
+						android:id="@+id/txt_home"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:text="Beranda"
+						android:textColor="#FFFFFF"
+						android:textSize="11sp" />
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/tab_pustaka"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical">
+
+					<ImageView
+						android:id="@+id/img_favorite"
+						android:layout_width="20dp"
+						android:layout_height="20dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_bookmark" />
+
+					<TextView
+						android:id="@+id/txt_favorite"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:text="Pustaka"
+						android:textColor="#94A3B8"
+						android:textSize="11sp" />
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/tab_akun"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical">
+
+					<ImageView
+						android:id="@+id/img_profile"
+						android:layout_width="20dp"
+						android:layout_height="20dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_profile" />
+
+					<TextView
+						android:id="@+id/txt_profile"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="2dp"
+						android:text="Akun"
+						android:textColor="#94A3B8"
+						android:textSize="11sp" />
+				</LinearLayout>
+			</LinearLayout>
+		</FrameLayout>
+
+		<FrameLayout
+			android:id="@+id/btn_circle_search"
+			android:layout_width="56dp"
+			android:layout_height="64dp"
+			android:layout_marginStart="8dp"
+			android:clickable="true"
+			android:focusable="true">
+
+			<eightbitlab.com.blurview.BlurView
+				android:id="@+id/search_blur_bg"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<ImageView
+				android:id="@+id/img_search"
+				android:layout_width="20dp"
+				android:layout_height="20dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_search" />
+		</FrameLayout>
+	</LinearLayout>
+</FrameLayout>
