@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/catalog_root"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#050608">
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/catalog_scroll_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:fillViewport="true"
+		android:scrollbars="none">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="14dp"
+			android:paddingBottom="40dp">
+
+			<HorizontalScrollView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="6dp"
+				android:layout_marginBottom="14dp"
+				android:scrollbars="none">
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:gravity="center_vertical"
+					android:orientation="horizontal">
+
+					<TextView
+						android:id="@+id/filter_menu"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:gravity="center"
+						android:paddingHorizontal="14dp"
+						android:text="Filter"
+						android:textSize="13sp" />
+
+					<TextView
+						android:id="@+id/filter_semua"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:layout_marginEnd="8dp"
+						android:gravity="center"
+						android:paddingHorizontal="16dp"
+						android:text="Semua"
+						android:textSize="13sp" />
+
+					<TextView
+						android:id="@+id/filter_donghua"
+						android:layout_width="wrap_content"
+						android:layout_height="36dp"
+						android:gravity="center"
+						android:paddingHorizontal="16dp"
+						android:text="Donghua"
+						android:textSize="13sp" />
+				</LinearLayout>
+			</HorizontalScrollView>
+
+			<GridView
+				android:id="@+id/grid_catalog"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:horizontalSpacing="12dp"
+				android:numColumns="3"
+				android:stretchMode="columnWidth"
+				android:verticalSpacing="16dp" />
+
+			<LinearLayout
+				android:id="@+id/layout_loading_more"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:orientation="horizontal"
+				android:paddingVertical="14dp"
+				android:visibility="gone">
+
+				<ProgressBar
+					android:layout_width="22dp"
+					android:layout_height="22dp"
+					android:layout_marginEnd="8dp" />
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Memuat lebih banyak..."
+					android:textColor="#94A3B8"
+					android:textSize="12.5sp" />
+			</LinearLayout>
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+
+	<LinearLayout
+		android:id="@+id/catalog_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:gravity="center_vertical"
+		android:orientation="horizontal">
+
+		<FrameLayout
+			android:id="@+id/btn_catalog_back"
+			android:layout_width="42dp"
+			android:layout_height="42dp"
+			android:layout_marginEnd="10dp"
+			android:clickable="true"
+			android:focusable="true">
+
+			<eightbitlab.com.blurview.BlurView
+				android:id="@+id/catalog_back_blur_bg"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<ImageView
+				android:id="@+id/img_catalog_back_arrow"
+				android:layout_width="20dp"
+				android:layout_height="20dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_back_arrow" />
+		</FrameLayout>
+
+		<FrameLayout
+			android:id="@+id/catalog_header_pill"
+			android:layout_width="0dp"
+			android:layout_height="46dp"
+			android:layout_weight="1">
+
+			<eightbitlab.com.blurview.BlurView
+				android:id="@+id/catalog_header_blur_bg"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:gravity="center"
+				android:orientation="vertical"
+				android:paddingHorizontal="14dp">
+
+				<TextView
+					android:id="@+id/text_catalog_title"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:ellipsize="end"
+					android:maxLines="1"
+					android:text="Katalog Donghua"
+					android:textColor="#FFFFFF"
+					android:textSize="15sp" />
+
+				<TextView
+					android:id="@+id/text_catalog_subtitle"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:ellipsize="end"
+					android:maxLines="1"
+					android:text="Terbaru"
+					android:textColor="#94A3B8"
+					android:textSize="11sp" />
+			</LinearLayout>
+		</FrameLayout>
+	</LinearLayout>
+
+	<FrameLayout
+		android:id="@+id/btn_scroll_top"
+		android:layout_width="46dp"
+		android:layout_height="46dp"
+		android:layout_gravity="bottom|end"
+		android:layout_marginEnd="16dp"
+		android:layout_marginBottom="28dp"
+		android:clickable="true"
+		android:focusable="true"
+		android:visibility="gone">
+
+		<eightbitlab.com.blurview.BlurView
+			android:id="@+id/scroll_top_blur_bg"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
+
+		<ImageView
+			android:id="@+id/img_scroll_top_arrow"
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+			android:layout_gravity="center"
+			android:rotation="-90"
+			android:scaleType="fitCenter"
+			android:src="@drawable/ic_chevron_right" />
+	</FrameLayout>
+</FrameLayout>
