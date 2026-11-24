@@ -4,10 +4,10 @@ import android.Manifest
 import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.pm.PackageManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -60,6 +60,23 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -74,6 +91,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import com.kyant.backdrop.catalog.components.LiquidBottomTabs
 import eightbitlab.com.blurview.BlurView
 import eightbitlab.com.blurview.RenderScriptBlur
 import java.io.File
@@ -203,6 +222,7 @@ class MainActivity : AppCompatActivity() {
 	private var viewAccountExpFill: View? = null
 
 	// Navbar & Liquid Glass
+	private var navbarWrapper: LinearLayout? = null
 	private var navbarExpanded: FrameLayout? = null
 	private var btnCompactHome: FrameLayout? = null
 	private var miniPlayerInlineSlot: FrameLayout? = null
@@ -218,12 +238,9 @@ class MainActivity : AppCompatActivity() {
 	private var txtFavorite: TextView? = null
 	private var txtProfile: TextView? = null
 	private var liquidDragPill: View? = null
-	private var navGlassOverlay: LiquidGlassOverlayView? = null
-	private var searchGlassOverlay: LiquidGlassOverlayView? = null
-	private var compactHomeGlassOverlay: LiquidGlassOverlayView? = null
-	private var pillGlassOverlay: LiquidGlassOverlayView? = null
 	private var activeNavTabIndex = 0
 	private var isNavbarCompact = false
+	private var composeTabState = mutableIntStateOf(0)
 
 	private var isDraggingNavbarPill = false
 	private var navDownRawX = 0f
@@ -361,9 +378,7 @@ class MainActivity : AppCompatActivity() {
 						navDownRawX = rawX
 						navInitialPillTx = pill.translationX
 						isDraggingNavbarPill = false
-						pill.animate().scaleX(1.10f).scaleY(1.08f).setDuration(110).start()
-						pillGlassOverlay?.pressProgress = 1f
-						navGlassOverlay?.pressProgress = 0.65f
+						pill.animate().scaleX(1.06f).scaleY(1.04f).setDuration(100).start()
 						return true
 					}
 				}
@@ -379,11 +394,7 @@ class MainActivity : AppCompatActivity() {
 				}
 				MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
 					if (navDownRawX > 0f) {
-						pill.animate().scaleX(1f).scaleY(1f)
-							.setInterpolator(OvershootInterpolator(1.25f))
-							.setDuration(180).start()
-						pillGlassOverlay?.pressProgress = 0f
-						navGlassOverlay?.pressProgress = 0f
+						pill.animate().scaleX(1f).scaleY(1f).setDuration(140).start()
 						val slotW = maxOf(1f, (trackW - (10 * d)) / 3f)
 						val targetIdx = if (isDraggingNavbarPill) {
 							maxOf(0, minOf(2, (pill.translationX / slotW).roundToInt()))
@@ -2399,6 +2410,7 @@ class MainActivity : AppCompatActivity() {
 		imgTopNotif = findViewById(R.id.img_top_search)
 		imgTopChat = findViewById(R.id.img_top_chat)
 
+		navbarWrapper = findViewById(R.id.navbar_wrapper)
 		navbarExpanded = findViewById(R.id.navbar)
 		btnCompactHome = findViewById(R.id.btn_compact_home)
 		miniPlayerInlineSlot = findViewById(R.id.mini_player_inline_slot)
@@ -2556,6 +2568,7 @@ class MainActivity : AppCompatActivity() {
 		setupIos26DraggableNavbar()
 		_Nav()
 		setupScrollResponsiveNavbar()
+		setupComposeLiquidNavbar()
 		applyOutfitFontsWithoutBold()
 
 		val d = resources.displayMetrics.density
@@ -2599,6 +2612,64 @@ class MainActivity : AppCompatActivity() {
 		dongflixReq.startRequestNetwork("GET", CATALOG_URL, "", dongflixReqListener)
 	}
 
+	private fun setupComposeLiquidNavbar() {
+		val composeView = findViewById<ComposeView>(R.id.compose_liquid_navbar) ?: return
+		navbarWrapper?.visibility = View.GONE
+		navbarExpanded?.visibility = View.GONE
+		liquidDragPill?.visibility = View.GONE
+
+		val items = listOf(
+			Triple("Beranda", R.drawable.ic_home, 0),
+			Triple("Pustaka", R.drawable.ic_bookmark, 1),
+			Triple("Akun", R.drawable.ic_profile, 2)
+		)
+
+		composeView.setContent {
+			val selectedTab = remember { composeTabState }
+			val backdrop = rememberLayerBackdrop()
+
+			LiquidBottomTabs(
+				selectedTabIndex = { selectedTab.intValue },
+				onTabSelected = { idx ->
+					selectedTab.intValue = idx
+					selectNavTabByIndex(idx, false)
+				},
+				backdrop = backdrop,
+				tabsCount = items.size,
+				modifier = Modifier.fillMaxWidth()
+			) {
+				items.forEachIndexed { idx, (label, iconRes, _) ->
+					val selected = selectedTab.intValue == idx
+					val tint = if (selected) androidx.compose.ui.graphics.Color.White else androidx.compose.ui.graphics.Color(0xFF94A3B8)
+					Column(
+						modifier = Modifier
+							.weight(1f)
+							.height(56.dp)
+							.clickable {
+								selectedTab.intValue = idx
+								selectNavTabByIndex(idx, false)
+							},
+						horizontalAlignment = Alignment.CenterHorizontally,
+						verticalArrangement = Arrangement.Center
+					) {
+						Icon(
+							painter = painterResource(id = iconRes),
+							contentDescription = label,
+							tint = tint,
+							modifier = Modifier.size(20.dp)
+						)
+						Spacer(modifier = Modifier.height(2.dp))
+						Text(
+							text = label,
+							color = tint,
+							fontSize = 11.sp
+						)
+					}
+				}
+			}
+		}
+	}
+
 	private fun setupRealTimeBlurView(blurTarget: View?, root: ViewGroup?, radius: Float) {
 		if (blurTarget !is BlurView || root == null) return
 		blurTarget.setupWith(root, RenderScriptBlur(this))
@@ -2617,39 +2688,19 @@ class MainActivity : AppCompatActivity() {
 		if (blurTarget != null && blurTarget !is BlurView) {
 			blurTarget.background = GradientDrawable(
 				GradientDrawable.Orientation.TOP_BOTTOM,
-				intArrayOf(Color.parseColor("#66161923"), Color.parseColor("#880A0C12"))
+				intArrayOf(Color.parseColor("#B3161923"), Color.parseColor("#CC0A0C12"))
 			).apply {
-				cornerRadius = 1000f
-				setStroke((1 * d).toInt(), Color.parseColor("#38FFFFFF"))
+				cornerRadius = 100f
+				setStroke((1 * d).toInt(), Color.parseColor("#33FFFFFF"))
 			}
 		}
-		if (containerTarget is ViewGroup) {
-			containerTarget.outlineProvider = object : ViewOutlineProvider() {
-				override fun getOutline(view: View, outline: Outline) {
-					outline.setRoundRect(0, 0, view.width, view.height, 1000f)
-				}
+		containerTarget?.let {
+			it.foreground = GradientDrawable().apply {
+				setColor(Color.TRANSPARENT)
+				cornerRadius = 1000f
+				setStroke((1 * d).toInt(), Color.parseColor("#33FFFFFF"))
 			}
-			containerTarget.clipToOutline = true
-			containerTarget.foreground = null
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) containerTarget.elevation = 20f
-
-			val existing = containerTarget.findViewWithTag<LiquidGlassOverlayView>("liquid_glass_overlay")
-			val overlay = existing ?: LiquidGlassOverlayView(this).apply {
-				tag = "liquid_glass_overlay"
-				layoutParams = FrameLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.MATCH_PARENT
-				)
-			}
-			if (existing == null) {
-				containerTarget.addView(overlay)
-			}
-
-			when (containerTarget.id) {
-				R.id.navbar -> navGlassOverlay = overlay
-				R.id.btn_circle_search -> searchGlassOverlay = overlay
-				R.id.btn_compact_home -> compactHomeGlassOverlay = overlay
-			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) it.elevation = 18f
 		}
 	}
 
@@ -2660,19 +2711,13 @@ class MainActivity : AppCompatActivity() {
 		val d = resources.displayMetrics.density
 
 		if (liquidDragPill == null) {
-			val dropletContainer = FrameLayout(this).apply {
+			liquidDragPill = View(this).apply {
 				background = GradientDrawable(
 					GradientDrawable.Orientation.TOP_BOTTOM,
-					intArrayOf(Color.parseColor("#2EFFFFFF"), Color.parseColor("#16FFFFFF"))
+					intArrayOf(Color.parseColor("#38FFFFFF"), Color.parseColor("#22FFFFFF"))
 				).apply {
-					cornerRadius = 1000f
+					cornerRadius = 100f
 				}
-				outlineProvider = object : ViewOutlineProvider() {
-					override fun getOutline(view: View, outline: Outline) {
-						outline.setRoundRect(0, 0, view.width, view.height, 1000f)
-					}
-				}
-				clipToOutline = true
 				layoutParams = FrameLayout.LayoutParams(
 					(96 * d).toInt(),
 					(54 * d).toInt(),
@@ -2681,19 +2726,7 @@ class MainActivity : AppCompatActivity() {
 					leftMargin = (5 * d).toInt()
 				}
 			}
-
-			val dropletGlass = LiquidGlassOverlayView(this).apply {
-				isDropletMode = true
-				layoutParams = FrameLayout.LayoutParams(
-					ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.MATCH_PARENT
-				)
-			}
-			dropletContainer.addView(dropletGlass)
-
-			pillGlassOverlay = dropletGlass
-			liquidDragPill = dropletContainer
-			nav.addView(dropletContainer, 1)
+			nav.addView(liquidDragPill, 1)
 		}
 		tabsRow.post { snapPillToTab(activeNavTabIndex, false) }
 	}
@@ -2733,6 +2766,7 @@ class MainActivity : AppCompatActivity() {
 
 	private fun selectNavTabByIndex(idx: Int, animatePill: Boolean) {
 		activeNavTabIndex = idx
+		composeTabState.intValue = idx
 		snapPillToTab(idx, animatePill)
 
 		val pages = arrayOf(
@@ -2833,9 +2867,9 @@ class MainActivity : AppCompatActivity() {
 		val compactBlur = findViewById<View>(R.id.compact_home_blur_bg)
 		val searchBlur = findViewById<View>(R.id.search_blur_bg)
 
-		setupRealTimeBlurView(navBlur, rootMain, 24f)
-		setupRealTimeBlurView(compactBlur, rootMain, 24f)
-		setupRealTimeBlurView(searchBlur, rootMain, 24f)
+		setupRealTimeBlurView(navBlur, rootMain, 20f)
+		setupRealTimeBlurView(compactBlur, rootMain, 20f)
+		setupRealTimeBlurView(searchBlur, rootMain, 20f)
 
 		applyUniversalGlassStyle(navBlur, navbarExpanded)
 		applyUniversalGlassStyle(compactBlur, btnCompactHome)
