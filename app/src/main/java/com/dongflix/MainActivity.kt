@@ -7,7 +7,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -202,6 +201,7 @@ class MainActivity : AppCompatActivity() {
 	private var viewAccountExpTrack: View? = null
 	private var viewAccountExpFill: View? = null
 
+	// Navbar & Liquid Glass
 	private var navbarExpanded: FrameLayout? = null
 	private var btnCompactHome: FrameLayout? = null
 	private var miniPlayerInlineSlot: FrameLayout? = null
@@ -217,6 +217,10 @@ class MainActivity : AppCompatActivity() {
 	private var txtFavorite: TextView? = null
 	private var txtProfile: TextView? = null
 	private var liquidDragPill: View? = null
+	private var navGlassOverlay: LiquidGlassOverlayView? = null
+	private var searchGlassOverlay: LiquidGlassOverlayView? = null
+	private var compactHomeGlassOverlay: LiquidGlassOverlayView? = null
+	private var pillGlassOverlay: LiquidGlassOverlayView? = null
 	private var activeNavTabIndex = 0
 	private var isNavbarCompact = false
 
@@ -356,7 +360,9 @@ class MainActivity : AppCompatActivity() {
 						navDownRawX = rawX
 						navInitialPillTx = pill.translationX
 						isDraggingNavbarPill = false
-						pill.animate().scaleX(1.06f).scaleY(1.04f).setDuration(100).start()
+						pill.animate().scaleX(1.10f).scaleY(1.08f).setDuration(110).start()
+						pillGlassOverlay?.pressProgress = 1f
+						navGlassOverlay?.pressProgress = 0.65f
 						return true
 					}
 				}
@@ -372,7 +378,11 @@ class MainActivity : AppCompatActivity() {
 				}
 				MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
 					if (navDownRawX > 0f) {
-						pill.animate().scaleX(1f).scaleY(1f).setDuration(140).start()
+						pill.animate().scaleX(1f).scaleY(1f)
+							.setInterpolator(OvershootInterpolator(1.25f))
+							.setDuration(180).start()
+						pillGlassOverlay?.pressProgress = 0f
+						navGlassOverlay?.pressProgress = 0f
 						val slotW = maxOf(1f, (trackW - (10 * d)) / 3f)
 						val targetIdx = if (isDraggingNavbarPill) {
 							maxOf(0, minOf(2, (pill.translationX / slotW).roundToInt()))
@@ -859,7 +869,7 @@ class MainActivity : AppCompatActivity() {
 		return TextView(this).apply {
 			text = label
 			gravity = Gravity.CENTER
-			textSize = TypedValue.COMPLEX_UNIT_SP.let { 13.5f }
+			textSize = 13.5f
 			setTypeface(getOutfitTypeface(), Typeface.NORMAL)
 			layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
 			setOnClickListener {
@@ -2606,19 +2616,39 @@ class MainActivity : AppCompatActivity() {
 		if (blurTarget != null && blurTarget !is BlurView) {
 			blurTarget.background = GradientDrawable(
 				GradientDrawable.Orientation.TOP_BOTTOM,
-				intArrayOf(Color.parseColor("#B3161923"), Color.parseColor("#CC0A0C12"))
+				intArrayOf(Color.parseColor("#66161923"), Color.parseColor("#880A0C12"))
 			).apply {
-				cornerRadius = 100f
-				setStroke((1 * d).toInt(), Color.parseColor("#33FFFFFF"))
+				cornerRadius = 1000f
+				setStroke((1 * d).toInt(), Color.parseColor("#38FFFFFF"))
 			}
 		}
-		containerTarget?.let {
-			it.foreground = GradientDrawable().apply {
-				setColor(Color.TRANSPARENT)
-				cornerRadius = 1000f
-				setStroke((1 * d).toInt(), Color.parseColor("#33FFFFFF"))
+		if (containerTarget is ViewGroup) {
+			containerTarget.outlineProvider = object : ViewOutlineProvider() {
+				override fun getOutline(view: View, outline: Outline) {
+					outline.setRoundRect(0, 0, view.width, view.height, 1000f)
+				}
 			}
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) it.elevation = 18f
+			containerTarget.clipToOutline = true
+			containerTarget.foreground = null
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) containerTarget.elevation = 20f
+
+			val existing = containerTarget.findViewWithTag<LiquidGlassOverlayView>("liquid_glass_overlay")
+			val overlay = existing ?: LiquidGlassOverlayView(this).apply {
+				tag = "liquid_glass_overlay"
+				layoutParams = FrameLayout.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT
+				)
+			}
+			if (existing == null) {
+				containerTarget.addView(overlay)
+			}
+
+			when (containerTarget.id) {
+				R.id.navbar -> navGlassOverlay = overlay
+				R.id.btn_circle_search -> searchGlassOverlay = overlay
+				R.id.btn_compact_home -> compactHomeGlassOverlay = overlay
+			}
 		}
 	}
 
@@ -2629,13 +2659,19 @@ class MainActivity : AppCompatActivity() {
 		val d = resources.displayMetrics.density
 
 		if (liquidDragPill == null) {
-			liquidDragPill = View(this).apply {
+			val dropletContainer = FrameLayout(this).apply {
 				background = GradientDrawable(
 					GradientDrawable.Orientation.TOP_BOTTOM,
-					intArrayOf(Color.parseColor("#38FFFFFF"), Color.parseColor("#22FFFFFF"))
+					intArrayOf(Color.parseColor("#2EFFFFFF"), Color.parseColor("#16FFFFFF"))
 				).apply {
-					cornerRadius = 100f
+					cornerRadius = 1000f
 				}
+				outlineProvider = object : ViewOutlineProvider() {
+					override fun getOutline(view: View, outline: Outline) {
+						outline.setRoundRect(0, 0, view.width, view.height, 1000f)
+					}
+				}
+				clipToOutline = true
 				layoutParams = FrameLayout.LayoutParams(
 					(96 * d).toInt(),
 					(54 * d).toInt(),
@@ -2644,7 +2680,19 @@ class MainActivity : AppCompatActivity() {
 					leftMargin = (5 * d).toInt()
 				}
 			}
-			nav.addView(liquidDragPill, 1)
+
+			val dropletGlass = LiquidGlassOverlayView(this).apply {
+				isDropletMode = true
+				layoutParams = FrameLayout.LayoutParams(
+					ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT
+				)
+			}
+			dropletContainer.addView(dropletGlass)
+
+			pillGlassOverlay = dropletGlass
+			liquidDragPill = dropletContainer
+			nav.addView(dropletContainer, 1)
 		}
 		tabsRow.post { snapPillToTab(activeNavTabIndex, false) }
 	}
@@ -2784,9 +2832,9 @@ class MainActivity : AppCompatActivity() {
 		val compactBlur = findViewById<View>(R.id.compact_home_blur_bg)
 		val searchBlur = findViewById<View>(R.id.search_blur_bg)
 
-		setupRealTimeBlurView(navBlur, rootMain, 20f)
-		setupRealTimeBlurView(compactBlur, rootMain, 20f)
-		setupRealTimeBlurView(searchBlur, rootMain, 20f)
+		setupRealTimeBlurView(navBlur, rootMain, 24f)
+		setupRealTimeBlurView(compactBlur, rootMain, 24f)
+		setupRealTimeBlurView(searchBlur, rootMain, 24f)
 
 		applyUniversalGlassStyle(navBlur, navbarExpanded)
 		applyUniversalGlassStyle(compactBlur, btnCompactHome)
